@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="theme-color" content="#1a1f2e"/>
+  <title>Weekly Briefing — Week of Jun 10</title>
+  <style>
+    :root {
+      --bg: #1a1f2e;
+      --surface: #252b3b;
+      --surface2: #2e3548;
+      --primary: #4ade80;
+      --secondary: #fb7185;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --border: #334155;
+      --radius: 12px;
+      --school: #7dd3fc;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.5;
+      padding-bottom: 40px;
+    }
+    header {
+      background: var(--surface);
+      padding: 20px 16px 14px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    header .week { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 4px; }
+    header h1 { font-size: 17px; font-weight: 700; line-height: 1.3; }
+    header .generated { font-size: 11px; color: var(--muted); margin-top: 4px; }
+    .cap-warning {
+      background: #7f1d1d; border-left: 4px solid #ef4444;
+      padding: 10px 14px; margin: 12px 14px; border-radius: 8px;
+      font-size: 13px;
+    }
+    section { padding: 16px 14px 4px; }
+    section + section { border-top: 1px solid var(--border); }
+    h2 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 12px; }
+    /* Top 3 */
+    #top3 { background: var(--surface); border-radius: var(--radius); margin: 12px 10px; padding: 14px; }
+    #top3 h2 { color: var(--primary); }
+    #top3 ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    #top3 li { font-size: 14px; line-height: 1.4; }
+    #top3 a { color: var(--text); text-decoration: none; }
+    /* Days */
+    .day-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      margin-bottom: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .day-card.today { border-color: var(--primary); }
+    .day-card summary {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 11px 14px; cursor: pointer; list-style: none;
+      font-weight: 600; font-size: 14px;
+    }
+    .day-card summary::-webkit-details-marker { display: none; }
+    .day-label { flex: 1; }
+    .day-count { font-size: 11px; color: var(--muted); font-weight: 400; }
+    .day-events { padding: 0 12px 12px; display: flex; flex-direction: column; gap: 8px; }
+    .event {
+      background: var(--surface2); border-radius: 8px;
+      padding: 9px 11px; display: flex; flex-direction: column; gap: 3px;
+    }
+    .time { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; }
+    .title a { color: var(--text); text-decoration: none; }
+    .title a:hover { text-decoration: underline; }
+    .school { color: var(--school); font-style: italic; }
+    .meta { font-size: 12px; color: var(--muted); }
+    .note { font-size: 12px; color: #fbbf24; background: rgba(251,191,36,.08); padding: 4px 8px; border-radius: 6px; margin-top: 2px; }
+    .no-events { color: var(--muted); font-size: 13px; padding: 4px 0; }
+    /* Planning */
+    .plan-item {
+      background: var(--surface); border-radius: 10px;
+      padding: 10px 12px; margin-bottom: 8px;
+    }
+    .plan-date { font-size: 11px; font-weight: 700; color: var(--secondary); text-transform: uppercase; }
+    .plan-text { font-size: 14px; display: block; margin-top: 2px; }
+    .plan-text a { color: var(--text); text-decoration: none; }
+    .sub-list { margin-top: 8px; }
+    .sub-list summary { font-size: 12px; color: var(--muted); cursor: pointer; list-style: none; padding: 4px 0; }
+    .sub-list summary::-webkit-details-marker { display: none; }
+    .sub-list ul { margin: 6px 0 0 12px; font-size: 13px; line-height: 1.8; color: var(--text); }
+    .badge { font-size: 10px; background: var(--surface2); padding: 1px 6px; border-radius: 4px; margin-left: 6px; }
+    .src-link { font-size: 11px; color: var(--muted); margin-left: 6px; }
+    /* Email events */
+    .email-event {
+      background: var(--surface); border-radius: 10px;
+      padding: 10px 12px; margin-bottom: 8px;
+    }
+    .snippet { font-size: 12px; color: var(--muted); margin: 4px 0 6px; line-height: 1.4; }
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+    .btn-link {
+      font-size: 12px; padding: 5px 10px; border-radius: 6px;
+      background: var(--surface2); color: var(--text); text-decoration: none;
+      border: 1px solid var(--border);
+    }
+    .btn-add { background: rgba(74,222,128,.12); color: var(--primary); border-color: var(--primary); }
+    /* Facebook */
+    .fb-post {
+      background: var(--surface); border-radius: 10px;
+      padding: 10px 12px; margin-bottom: 8px;
+    }
+    .fb-group { font-size: 11px; font-weight: 700; color: #60a5fa; text-transform: uppercase; }
+    .fb-post p { font-size: 13px; color: var(--muted); margin: 4px 0 6px; }
+    .fb-post a { font-size: 12px; color: #60a5fa; }
+    /* School */
+    .school-item {
+      background: var(--surface); border-radius: 10px;
+      padding: 10px 12px; margin-bottom: 8px;
+      font-size: 14px; line-height: 1.5;
+    }
+    .school-tag { font-size: 10px; font-weight: 700; background: var(--surface2); padding: 2px 6px; border-radius: 4px; color: var(--school); margin-right: 6px; text-transform: uppercase; }
+    .school-item a { color: var(--school); }
+    /* Footer */
+    footer {
+      text-align: center; color: var(--muted); font-size: 11px;
+      padding: 20px 14px; border-top: 1px solid var(--border); margin-top: 16px;
+    }
+  </style>
+  <script>
+    // Mark today's card
+    document.addEventListener('DOMContentLoaded', function() {
+      var now = new Date();
+      var pad = function(n) { return n < 10 ? '0' + n : n; };
+      var today = now.getFullYear() + '-' + pad(now.getMonth()+1) + '-' + pad(now.getDate());
+      var card = document.querySelector('[data-date="' + today + '"]');
+      if (card) { card.classList.add('today'); card.open = true; }
+    });
+  </script>
+</head>
+<body>
+  <header>
+    <div class="week">Week of Jun 10</div>
+    <h1>Week of Jun 10 — cardiologist today, Camp starts Monday &amp; Ben to Peoria</h1>
+    <div class="generated">Updated 2026-06-10T09:00:00-05:00</div>
+  </header>
+  
+  <section id="top3"><h2>⚡ Top 3 Things to Know</h2><ul><li>🏥 <a href="https://www.google.com/calendar/event?eid=N2kxM2d1aW5uaGkya3BlZGlibzB0MjRqZXEgc2FiaW5hLmZlcnJhcmFtdWxsaW5AZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ" target="_blank">Albert&#x27;s cardiologist TODAY at 12:30pm — 3722 W Touhy Ave, Skokie. Plan the drive.</a></li><li>🏕️ <a href="https://www.google.com/calendar/event?eid=N284N29ocnF0ZnVpdHZuN2xwaHN2N3RvcHMgY19hNDJkZWU1NzY0ZDNkNGYyYTkxYmY2OGI2Mjk4Yjg5OTgyOWExODM3OTk3OTIwYTY4YzM2MzBiN2EwZGI2OTRiQGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20" target="_blank">Summer Camp starts Monday June 15 — Albert&#x27;s Watercolor class at Lane Tech also kicks off 9am.</a></li><li>🚗 <a href="https://calendar.google.com/calendar/r/day/2026/6/16" target="_blank">Ben leaves for Peoria Tuesday Jun 16, back Friday evening. Sabina solo with the boys.</a></li></ul></section>
+  <section id="days"><h2>This Week</h2>
+        <details class="day-card" data-date="2026-06-10" open>
+          <summary><span class="day-label">Wed Jun 10</span><span class="day-count">5 events</span></summary>
+          <div class="day-events"><div class="event"><span class="time">7:45am</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=NWVhdmc3bTY0dTVrb2ZvZDJsZzMxZ3RmM3NfMjAyNjA2MTBUMTIzMDAwWiBzYWJpbmEuZmVycmFyYW11bGxpbkBt" target="_blank">Al — Lane Enrichment 8:30–11:30 (Champions Week)</a></strong></span><span class="meta">👥 Albert</span><span class="meta">📍 Lane Tech (Door M opens 8:10am)</span></div><div class="event"><span class="time">12:30pm</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=N2kxM2d1aW5uaGkya3BlZGlibzB0MjRqZXEgc2FiaW5hLmZlcnJhcmFtdWxsaW5AZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ" target="_blank">Albert — Cardiologist appointment</a></strong></span><span class="meta">👥 Albert</span><span class="meta">📍 3722 W Touhy Ave, Skokie</span></div><div class="event"><span class="time">4:00pm</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=M25kcXFxa3BxdGE2ZmcydG50Mmo0dm05cDFfMjAyNjA2MTBUMjEwMDAwWiBiZW4uc2NobXVja0Bt" target="_blank">Dominic and Becca meet</a></strong></span><span class="meta">👥 Dominic</span></div><div class="event"><span class="time">5:00pm</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=ZDRmMDVmYmM2cGU4MmUyNDRtbW12Njh1cGdfMjAyNjA2MTBUMjIwMDAwWiBzYWJpbmEuZmVycmFyYW11bGxpbkBt" target="_blank">Jazzin at the Shedd</a></strong></span><span class="meta">👥 Ben, Sabina</span><span class="meta">📍 Shedd Aquarium, 1200 S DuSable</span></div><div class="event"><span class="time">6:30pm</span><span class="title"><em class="school">🏫 <a href="https://www.google.com/calendar/event?eid=NDRpcHJxNDUzZGltZjIxYWI3dW9tYTZzc2pfMjAyNjA2MTBUMjMzMDAwWiBjX2E0MmRlZTU3NjRkM2Q0ZjJhOTFiZjY4YjYyOThiODk5ODI5YTE4Mzc5OTc5MjBhNjhjMzYzMGI3YTBkYjY5NGJAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ" target="_blank">Scout Troop — Cafeteria (ages 11–18)</a></em></span></div></div>
+        </details>
+        <details class="day-card" data-date="2026-06-11" open>
+          <summary><span class="day-label">Thu Jun 11</span><span class="day-count">3 events</span></summary>
+          <div class="day-events"><div class="event"><span class="time">7:45am</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=NWVhdmc3bTY0dTVrb2ZvZDJsZzMxZ3RmM3NfMjAyNjA2MTFUMTIzMDAwWiBzYWJpbmEuZmVycmFyYW11bGxpbkBt" target="_blank">Al — Lane Enrichment 8:30–11:30 (Champions Week)</a></strong></span><span class="meta">👥 Albert</span><span class="meta">📍 Lane Tech (Door M opens 8:10am)</span></div><div class="event"><span class="time">11:15am</span><span class="title"><strong><a href="https://mail.google.com/mail/u/0/#inbox/19eb20a35e6d2d69" target="_blank">Appointment — Andrea Picard LCPC (from email — not on main calendar)</a></strong></span><span class="note">💡 Art/child therapist — check who this is for and add to calendar.</span></div><div class="event"><span class="time">7:45pm</span><span class="title"><strong><a href="https://calendar.google.com/calendar/r/day/2026/6/11" target="_blank">Basketball (Sabina)</a></strong></span><span class="meta">👥 Sabina</span></div></div>
+        </details>
+        <details class="day-card" data-date="2026-06-12" open>
+          <summary><span class="day-label">Fri Jun 12</span><span class="day-count">3 events</span></summary>
+          <div class="day-events"><div class="event"><span class="time">7:45am</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=NWVhdmc3bTY0dTVrb2ZvZDJsZzMxZ3RmM3NfMjAyNjA2MTJUMTIzMDAwWiBzYWJpbmEuZmVycmFyYW11bGxpbkBt" target="_blank">Al — Lane Enrichment 8:30–11:30 (last day of Champions Week!)</a></strong></span><span class="meta">👥 Albert</span><span class="meta">📍 Lane Tech</span></div><div class="event"><span class="time">12:00pm</span><span class="title"><strong><a href="https://mail.google.com/mail/u/0/#inbox/19eae60ea5fecc84" target="_blank">Couples therapy — Ben &amp; Sabina with Chelsey Daval (Roamers, virtual)</a></strong></span><span class="meta">👥 Ben, Sabina</span><span class="note">💡 From email reminder — not on main calendar. Virtual via SimplePractice.</span></div><div class="event"><span class="time">4:30pm</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=cmNmNnBidXNubnRmZzNkYWpsM2tocnFhcW8gc2FiaW5hLmZlcnJhcmFtdWxsaW5AZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ" target="_blank">Casey Bday Party 5–7pm</a></strong></span><span class="meta">📍 McFetridge Ice Rink (Indoor)</span></div></div>
+        </details>
+        <details class="day-card" data-date="2026-06-13" open>
+          <summary><span class="day-label">Sat Jun 13</span><span class="day-count">3 events</span></summary>
+          <div class="day-events"><div class="event"><span class="time">7:15am</span><span class="title"><strong><a href="https://calendar.google.com/calendar/r/day/2026/6/13" target="_blank">Grocery Shopping</a></strong></span><span class="meta">👥 Ben, Sabina</span></div><div class="event"><span class="time">10:00am</span><span class="title"><strong><a href="https://calendar.google.com/calendar/r/day/2026/6/13" target="_blank">Dominic — Reading Tutor with Simone (virtual)</a></strong></span><span class="meta">👥 Dominic</span></div><div class="event"><span class="time">All day</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=OGg3aG9ja3Y1NWNyNG5hYzI4YWpidW9qdDQgc2FiaW5hLmZlcnJhcmFtdWxsaW5AZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ" target="_blank">Note: Albert asked about watching 4th of July fireworks in Two Rivers</a></strong></span><span class="note">💡 Albert wants to go — see if plans with Two Rivers family solidify</span></div></div>
+        </details>
+        <details class="day-card" data-date="2026-06-14" open>
+          <summary><span class="day-label">Sun Jun 14</span><span class="day-count">3 events</span></summary>
+          <div class="day-events"><div class="event"><span class="time">All day</span><span class="title"><em class="school">🏫 <a href="https://calendar.google.com/calendar/r/day/2026/6/14" target="_blank">Flag Day 🇺🇸</a></em></span></div><div class="event"><span class="time">9:00am</span><span class="title"><strong><a href="https://calendar.google.com/calendar/r/day/2026/6/14" target="_blank">Church</a></strong></span></div><div class="event"><span class="time">11:00am</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=NjExNHBxZ3UxOXNtazFxc3Q0c2Y0bDNidW9fMjAyNjA2MTRUMTYwMDAwWiBiZW4uc2NobXVja0Bt" target="_blank">Update Finances, Transfer $, Pay CCs</a></strong></span><span class="meta">👥 Ben, Sabina</span></div></div>
+        </details>
+        <details class="day-card" data-date="2026-06-15" open>
+          <summary><span class="day-label">Mon Jun 15</span><span class="day-count">5 events</span></summary>
+          <div class="day-events"><div class="event"><span class="time">All day</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=N284N29ocnF0ZnVpdHZuN2xwaHN2N3RvcHMgY19hNDJkZWU1NzY0ZDNkNGYyYTkxYmY2OGI2Mjk4Yjg5OTgyOWExODM3OTk3OTIwYTY4YzM2MzBiN2EwZGI2OTRiQGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20" target="_blank">🏕️ 1st Day of Summer Camp</a></strong></span><span class="meta">👥 Dominic</span></div><div class="event"><span class="time">6:30am</span><span class="title"><strong><a href="https://calendar.google.com/calendar/r/day/2026/6/15" target="_blank">ABT Service Repair — Icemaker (Ben stays home)</a></strong></span><span class="meta">👥 Ben</span></div><div class="event"><span class="time">9:00am</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=azhnc2loMHNwdjh0YW5oanY1M2I0czluNjRfMjAyNjA2MTVUMTMwMDAwWiBzYWJpbmEuZmVycmFyYW11bGxpbkBt" target="_blank">Al — Watercolor Class 9–12 @ Lane Tech</a></strong></span><span class="meta">👥 Albert</span><span class="meta">📍 Lane Tech College Prep</span></div><div class="event"><span class="time">4:00pm</span><span class="title"><strong><a href="https://calendar.google.com/calendar/r/day/2026/6/15" target="_blank">Therapy Appointment — AS (Albert&#x27;s therapy, virtual)</a></strong></span><span class="meta">👥 Albert</span></div><div class="event"><span class="time">6:30pm</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=MmlhNDEybjJpZjlubWhidmR0cWI2bDhvaDRfMjAyNjA2MTVUMjMwMDAwWiBzYWJpbmEuZmVycmFyYW11bGxpbkBt" target="_blank">Millennium Park</a></strong></span></div></div>
+        </details>
+        <details class="day-card" data-date="2026-06-16" open>
+          <summary><span class="day-label">Tue Jun 16</span><span class="day-count">5 events</span></summary>
+          <div class="day-events"><div class="event"><span class="time">Morning</span><span class="title"><strong><a href="https://calendar.google.com/calendar/r/day/2026/6/16" target="_blank">Ben leaves for Peoria (back Friday evening)</a></strong></span><span class="meta">👥 Ben</span><span class="note">💡 Sabina solo with the boys Tue–Fri. Albert still has Watercolor class daily.</span></div><div class="event"><span class="time">9:00am</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=azhnc2loMHNwdjh0YW5oanY1M2I0czluNjRfMjAyNjA2MTZUMTMwMDAwWiBzYWJpbmEuZmVycmFyYW11bGxpbkBt" target="_blank">Al — Watercolor Class 9–12 @ Lane Tech</a></strong></span><span class="meta">👥 Albert</span><span class="meta">📍 Lane Tech College Prep</span></div><div class="event"><span class="time">5:30pm</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=YWdhNTVtcGgxbGFjOTEyM211bmxmcXNuNjRfMjAyNjA2MTZUMjIzMDAwWiBzYWJpbmEuZmVycmFyYW11bGxpbkBt" target="_blank">Tuesdays on the Terrace — Jazz</a></strong></span><span class="meta">📍 Museum of Contemporary Art Chicago</span></div><div class="event"><span class="time">6:00pm</span><span class="title"><strong><a href="https://calendar.google.com/calendar/r/day/2026/6/16" target="_blank">Therapy 6pm (Sabina)</a></strong></span><span class="meta">👥 Sabina</span></div><div class="event"><span class="time">Evening</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=N29oYWJqcHEwa3Zpc2hkaDlidmhzdmgwcGMgc2FiaW5hLmZlcnJhcmFtdWxsaW5AZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ" target="_blank">Mr Roy&#x27;s Book — Event</a></strong></span></div></div>
+        </details></section>
+  <section id="planning"><h2>📅 Planning Ahead</h2><div class="plan-item"><span class="plan-date">Jun 17</span> <span class="plan-text"><a href="https://calendar.google.com/calendar/r/day/2026/6/17" target="_blank">Water Polo Club Tryout 6:30pm @ Whitney Young — NOT CONFIRMED yet!</a></span></div><div class="plan-item"><span class="plan-date">Jun 18</span> <span class="plan-text"><a href="https://calendar.google.com/calendar/r/day/2026/6/18" target="_blank">Sabina teeth cleaning 9am @ River Forest Dental Group</a></span></div><div class="plan-item"><span class="plan-date">Jun 20</span> <span class="plan-text"><a href="https://calendar.google.com/calendar/r/day/2026/6/20" target="_blank">Block Party! Also: Carmela &amp; Josephine visiting 10:30am</a></span></div><div class="plan-item"><span class="plan-date">Jun 21</span> <span class="plan-text"><a href="https://calendar.google.com/calendar/r/day/2026/6/21" target="_blank">Father&#x27;s Day — Celebrate with Johnny 4pm @ 3117 N Kostner Ave</a></span><details class="sub-list"><summary>🎁 What to bring <span class="badge">💡 Suggested</span></summary><ul><li>A nice bottle of wine</li><li>A six-pack of craft beer</li><li>Dessert to share</li></ul></details></div><div class="plan-item"><span class="plan-date">Jun 22</span> <span class="plan-text"><a href="https://www.google.com/calendar/event?eid=aGhtMWRwdDZudTlsZWNiYTF2cGIgc2FiaW5hLmZlcnJhcmFtdWxsaW5AZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ" target="_blank">Albert — Summer of Algebra 8am daily @ Lane Tech (runs Jun 22 – Jul 16)</a></span></div><div class="plan-item"><span class="plan-date">Jun 24</span> <span class="plan-text"><a href="https://calendar.google.com/calendar/r/day/2026/6/24" target="_blank">Al Orthodontist 7:30am</a></span></div><div class="plan-item"><span class="plan-date">Jun 27</span> <span class="plan-text"><a href="https://calendar.google.com/calendar/r/day/2026/6/27" target="_blank">🎵 Weird Al @ United Center 8pm!</a></span></div><div class="plan-item"><span class="plan-date">Jun 28</span> <span class="plan-text"><a href="https://calendar.google.com/calendar/r/day/2026/6/28" target="_blank">St. Helen Church Picnic 11:30am</a></span></div><div class="plan-item"><span class="plan-date">Jul 1</span> <span class="plan-text"><a href="https://www.google.com/calendar/event?eid=NzY4YTF1dDhyZXE3MWVhcW1rdTFsYTV1M2ggc2FiaW5hLmZlcnJhcmFtdWxsaW5AZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ" target="_blank">🧠 Dominic&#x27;s 504 Plan Evaluation @ Edgebrook Public School (8:30am, 3 hrs) — major milestone!</a></span></div><div class="plan-item"><span class="plan-date">Jul 2</span> <span class="plan-text"><a href="https://calendar.google.com/calendar/r/day/2026/7/2" target="_blank">Dom — Orthodontist 9:10am</a></span></div><div class="plan-item"><span class="plan-date">Jul 5</span> <span class="plan-text"><a href="https://calendar.google.com/calendar/r/day/2026/7/5" target="_blank">Monthly Boys Brunch @ bartaco 12:30pm; Reconnect with Connecticut Family re: July Roadtrip (virtual)</a></span></div><div class="plan-item"><span class="plan-date">Jul 6</span> <span class="plan-text"><a href="https://calendar.google.com/calendar/r/day/2026/7/6" target="_blank">🏕️ Dominic starts sleepaway camp @ Dunes Learning Center; Sabina starts Six Sigma Green Belt training (week 1, M–F)</a></span></div><div class="plan-item"><span class="plan-date">Jul 9</span> <span class="plan-text"><a href="https://calendar.google.com/calendar/r/day/2026/7/9" target="_blank">Lane Tech LSC Meeting 6pm</a></span></div><div class="plan-item"><span class="plan-date">Jul 10</span> <span class="plan-text"><a href="https://calendar.google.com/calendar/r/day/2026/7/10" target="_blank">Square Roots Festival; Levi&#x27;s Block Party</a></span></div><div class="plan-item"><span class="plan-date">Jul 12</span> <span class="plan-text"><a href="https://calendar.google.com/calendar/r/day/2026/7/12" target="_blank">Celebrate GRose Bday @ Scoville Park 5pm</a></span><details class="sub-list"><summary>🎁 What to bring <span class="badge">💡 Suggested</span></summary><ul><li>Birthday card</li><li>Flowers</li><li>A bottle of wine</li></ul></details></div><div class="plan-item"><span class="plan-date">Jul 13</span> <span class="plan-text"><a href="https://calendar.google.com/calendar/r/day/2026/7/14" target="_blank">Amy Li in Town (Jul 13–15); Jul 14: Fabian invites to dinner in Oak Park with Amy Li</a></span><details class="sub-list"><summary>🎁 What to bring <span class="badge">💡 Suggested</span></summary><ul><li>A bottle of wine</li><li>Dessert from a local bakery</li></ul></details></div><div class="plan-item"><span class="plan-date">Jul 16</span> <span class="plan-text"><a href="https://calendar.google.com/calendar/r/day/2026/7/16" target="_blank">Albert&#x27;s last day of Summer of Algebra 🎓; Marirose Birthday</a></span></div><div class="plan-item"><span class="plan-date">Jul 17</span> <span class="plan-text"><a href="https://calendar.google.com/calendar/r/day/2026/7/17" target="_blank">Tacos y Tamales Festival; Roscoe Village Burger Fest</a></span></div><div class="plan-item"><span class="plan-date">Jul 24</span> <span class="plan-text"><a href="https://calendar.google.com/calendar/r/day/2026/7/24" target="_blank">Nina and family in Two Rivers (FMSL Cal); Coffee with Julia Byrd TBD</a></span></div><div class="plan-item"><span class="plan-date">Jul 27</span> <span class="plan-text"><a href="https://calendar.google.com/calendar/r/day/2026/7/27" target="_blank">Matt Kutylo&#x27;s birthday / Kutylo Bday party</a></span></div><div class="plan-item"><span class="plan-date">Aug 1</span> <span class="plan-text"><a href="https://calendar.google.com/calendar/r/day/2026/8/1" target="_blank">⚠️ CREATE CPS EMAIL ACCOUNT FOR ALBERT — deadline before Freshman Orientation!</a></span></div><div class="plan-item"><span class="plan-date">Aug 2</span> <span class="plan-text"><a href="https://calendar.google.com/calendar/r/day/2026/8/2" target="_blank">Albert &amp; Dominic go to WI Dells with Johnny &amp; GRose! Monthly Boys Brunch @ bartaco 12:30pm; Chicago Italian Beef Festival</a></span></div><div class="plan-item"><span class="plan-date">Aug 3</span> <span class="plan-text"><a href="https://calendar.google.com/calendar/r/day/2026/8/3" target="_blank">Sabina Six Sigma training week 2 (M–F); Maybe kayak in Door County?</a></span></div><div class="plan-item"><span class="plan-date">Aug 7</span> <span class="plan-text"><a href="https://calendar.google.com/calendar/r/day/2026/8/7" target="_blank">🏕️ Last Day of Summer Camp</a></span></div><div class="plan-item"><span class="plan-date">Aug 8</span> <span class="plan-text"><a href="https://calendar.google.com/calendar/r/day/2026/8/8" target="_blank">🎊 Roseclaire Wedding!</a></span></div><div class="plan-item"><span class="plan-date">Aug 20</span> <span class="plan-text"><a href="https://calendar.google.com/calendar/r/day/2026/8/20" target="_blank">1st Day of School — St. Helen (Dominic starts 7th grade)</a></span></div></section>
+  
+  <section id="facebook"><h2>📣 Facebook Groups</h2><div class="fb-post"><span class="fb-group">Lane Tech Class of 2030 Parents</span><p>Tess Rotar (Jun 8): &#x27;Missing communication regarding this week&#x27;s Champions Week...&#x27; — other parents noting they didn&#x27;t receive info.</p><a href="https://mail.google.com/mail/u/0/#inbox/19ea83eda228856e" target="_blank">View post →</a></div><div class="fb-post"><span class="fb-group">Lane Tech Class of 2030 Parents</span><p>Mallory Ward (Jun 8) on Ben&#x27;s post: &#x27;Anyone receive the algebra placement results yet?&#x27; — Ben replied: &#x27;Yes - We got the same note yesterday.&#x27; Thread still active.</p><a href="https://mail.google.com/mail/u/0/#inbox/19e74adfe5acec6a" target="_blank">View post →</a></div></section>
+  
+  <footer>Cal · Tasklet · Week of Jun 10</footer>
+</body>
+</html>
