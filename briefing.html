@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="theme-color" content="#1a1f2e"/>
+  <title>Weekly Briefing — Week of Jul 6</title>
+  <style>
+    :root {
+      --bg: #1a1f2e;
+      --surface: #252b3b;
+      --surface2: #2e3548;
+      --primary: #4ade80;
+      --secondary: #fb7185;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --border: #334155;
+      --radius: 12px;
+      --school: #7dd3fc;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.5;
+      padding-bottom: 40px;
+    }
+    header {
+      background: var(--surface);
+      padding: 20px 16px 14px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    header .week { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 4px; }
+    header h1 { font-size: 17px; font-weight: 700; line-height: 1.3; }
+    header .generated { font-size: 11px; color: var(--muted); margin-top: 4px; }
+    .cap-warning {
+      background: #7f1d1d; border-left: 4px solid #ef4444;
+      padding: 10px 14px; margin: 12px 14px; border-radius: 8px;
+      font-size: 13px;
+    }
+    section { padding: 16px 14px 4px; }
+    section + section { border-top: 1px solid var(--border); }
+    h2 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 12px; }
+    /* Top 3 */
+    #top3 { background: var(--surface); border-radius: var(--radius); margin: 12px 10px; padding: 14px; }
+    #top3 h2 { color: var(--primary); }
+    #top3 ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    #top3 li { font-size: 14px; line-height: 1.4; }
+    #top3 a { color: var(--text); text-decoration: none; }
+    /* Days */
+    .day-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      margin-bottom: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .day-card.today { border-color: var(--primary); }
+    .day-card summary {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 11px 14px; cursor: pointer; list-style: none;
+      font-weight: 600; font-size: 14px;
+    }
+    .day-card summary::-webkit-details-marker { display: none; }
+    .day-label { flex: 1; }
+    .day-count { font-size: 11px; color: var(--muted); font-weight: 400; }
+    .day-events { padding: 0 12px 12px; display: flex; flex-direction: column; gap: 8px; }
+    .event {
+      background: var(--surface2); border-radius: 8px;
+      padding: 9px 11px; display: flex; flex-direction: column; gap: 3px;
+    }
+    .time { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; }
+    .title a { color: var(--text); text-decoration: none; }
+    .title a:hover { text-decoration: underline; }
+    .school { color: var(--school); font-style: italic; }
+    .meta { font-size: 12px; color: var(--muted); }
+    .note { font-size: 12px; color: #fbbf24; background: rgba(251,191,36,.08); padding: 4px 8px; border-radius: 6px; margin-top: 2px; }
+    .no-events { color: var(--muted); font-size: 13px; padding: 4px 0; }
+    /* Planning */
+    .plan-item {
+      background: var(--surface); border-radius: 10px;
+      padding: 10px 12px; margin-bottom: 8px;
+    }
+    .plan-date { font-size: 11px; font-weight: 700; color: var(--secondary); text-transform: uppercase; }
+    .plan-text { font-size: 14px; display: block; margin-top: 2px; }
+    .plan-text a { color: var(--text); text-decoration: none; }
+    .sub-list { margin-top: 8px; }
+    .sub-list summary { font-size: 12px; color: var(--muted); cursor: pointer; list-style: none; padding: 4px 0; }
+    .sub-list summary::-webkit-details-marker { display: none; }
+    .sub-list ul { margin: 6px 0 0 12px; font-size: 13px; line-height: 1.8; color: var(--text); }
+    .badge { font-size: 10px; background: var(--surface2); padding: 1px 6px; border-radius: 4px; margin-left: 6px; }
+    .src-link { font-size: 11px; color: var(--muted); margin-left: 6px; }
+    /* Email events */
+    .next-week-header { margin-top: 2rem; padding-top: 1rem; border-top: 2px solid #e2e8f0; }
+    .nothing-found { color: var(--muted); font-size: 13px; padding: 6px 0; }
+    .subsection-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 14px 0 6px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+    .email-event {
+      background: var(--surface); border-radius: 10px;
+      padding: 10px 12px; margin-bottom: 8px;
+    }
+    .snippet { font-size: 12px; color: var(--muted); margin: 4px 0 6px; line-height: 1.4; }
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+    .btn-link {
+      font-size: 12px; padding: 5px 10px; border-radius: 6px;
+      background: var(--surface2); color: var(--text); text-decoration: none;
+      border: 1px solid var(--border);
+    }
+    .btn-add { background: rgba(74,222,128,.12); color: var(--primary); border-color: var(--primary); }
+    /* Facebook */
+    .fb-post {
+      background: var(--surface); border-radius: 10px;
+      padding: 10px 12px; margin-bottom: 8px;
+    }
+    .fb-group { font-size: 11px; font-weight: 700; color: #60a5fa; text-transform: uppercase; }
+    .fb-post p { font-size: 13px; color: var(--muted); margin: 4px 0 6px; }
+    .fb-post a { font-size: 12px; color: #60a5fa; }
+    /* School */
+    .school-item {
+      background: var(--surface); border-radius: 10px;
+      padding: 10px 12px; margin-bottom: 8px;
+      font-size: 14px; line-height: 1.5;
+    }
+    .school-tag { font-size: 10px; font-weight: 700; background: var(--surface2); padding: 2px 6px; border-radius: 4px; color: var(--school); margin-right: 6px; text-transform: uppercase; }
+    .school-item a { color: var(--school); }
+    /* Google Docs */
+    .gdoc-block {
+      background: var(--surface); border-radius: 10px;
+      padding: 10px 12px; margin-bottom: 10px;
+    }
+    .gdoc-title { font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+    .gdoc-title a { color: #a78bfa; text-decoration: none; }
+    .gdoc-event { font-size: 13px; padding: 5px 0; border-top: 1px solid var(--border); display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px; }
+    .gdoc-oncal { color: var(--muted); font-style: italic; }
+    /* Footer */
+    footer {
+      text-align: center; color: var(--muted); font-size: 11px;
+      padding: 20px 14px; border-top: 1px solid var(--border); margin-top: 16px;
+    }
+  </style>
+  <script>
+    // Mark today's card
+    document.addEventListener('DOMContentLoaded', function() {
+      var now = new Date();
+      var pad = function(n) { return n < 10 ? '0' + n : n; };
+      var today = now.getFullYear() + '-' + pad(now.getMonth()+1) + '-' + pad(now.getDate());
+      var card = document.querySelector('[data-date="' + today + '"]');
+      if (card) { card.classList.add('today'); card.open = true; }
+    });
+  </script>
+</head>
+<body>
+  <header>
+    <div class="week">Week of Jul 6</div>
+    <h1>Albert&#x27;s Jr Lifeguard debut, road trip to Yorkville, and Amy Li in town</h1>
+    <div class="generated">Updated 2026-07-06T07:00:00-05:00</div>
+  </header>
+  
+  <section id="top3"><h2>⚡ Top 3 Things to Know</h2><ul><li>🏊 <a href="https://www.google.com/calendar/event?eid=a2gxN3BncmNodDNycWg2YWc0aDllYmJycDggbG11bW82OGNuZmo4YnJka2dmNm9hdDRkM2tAZw" target="_blank">Albert&#x27;s Jr Lifeguard Competition — Wed Jul 8 at Montrose Beach. Ben is on drop-off duty (Sabina&#x27;s in training all week).</a></li><li>🎉 <a href="https://www.google.com/calendar/event?eid=XzYwcTMwYzFnNjBvMzBlMWk2MG80YWMxZzYwcmo4Z3BsODhyajJjMWg4NHMzNGg5ZzYwczMwYzFnNjBvMzBjMWc2Y3EzZ2gyMzhrczRjY3BnNjBzNDhoMWc2NG8zMGMxZzYwbzMwYzFnNjBvMzBjMWc2MG8zMmMxZzYwbzMwYzFnOGwxNGFjcTU2OTMzZWRhNjY0cDNhZ2hrOGtzNDJlMjI2a29qOGg5bzc1MzM2Y2k1OGNzMCBiZW4uc2NobXVja0Bt" target="_blank">Road trip to Yorkville for Appleyard Party at Candy&#x27;s — Sat Jul 11. Don&#x27;t forget: Chicago beer for Candy &amp; Greg!</a></li><li>🎓 <a href="https://www.google.com/calendar/event?eid=ZWhnYTZqZmNqYW45b2RwMTIybzRkdjVkbmcgc2FiaW5hLmZlcnJhcmFtdWxsaW5AbQ" target="_blank">Albert&#x27;s Lane Tech countdown: Freshman Orientation Aug 19, Alpha STEM Welcome Day Aug 21, First Day Aug 24. English summer assignment (Into the Wild) due Aug 25.</a></li></ul></section>
+  
+  <section id="facebook"><h2>📣 Facebook Group Posts</h2><p class="nothing-found"><em>No new posts from school Facebook groups this week.</em></p></section>
+  <section id="email-events"><h2>📬 Spotted in Email &amp; Docs — Not Yet on Calendar</h2><div class="subsection-label">Dates &amp; deadlines from linked Google Docs</div><div class="gdoc-block"><div class="gdoc-title">📄 <a href="https://docs.google.com/document/d/1jDld9zHC-CTxy22yu7R2J7XzNa9BNw5X2QBJQoY8WT8/edit" target="_blank">Alpha STEM English I Summer Assignment</a></div><div class="gdoc-event"><span class="plan-date">Aug 25</span> <span class="gdoc-oncal">✅ Albert: Alpha English I Summer Assignment Due — Read Into the Wild by Jon Krakauer, complete analysis table (NOT an essay)</span></div></div></section>
+  <section id="school-news"><h2>🏫 New on School Websites</h2><p class="nothing-found"><em>No new announcements on school websites this week.</em></p></section>
+  <section id="days"><h2>📅 This Week</h2>
+        <details class="day-card" data-date="2026-07-06" open>
+          <summary><span class="day-label">Mon Jul 6</span><span class="day-count">2 events</span></summary>
+          <div class="day-events"><div class="event"><span class="time">All day</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=Y2JpMmJoM3JkaWN2djNndmZmNXNiYmxtbzQgc2FiaW5hLmZlcnJhcmFtdWxsaW5AbQ" target="_blank">Dom — Sleepaway Camp @ Dunes Learning Center</a></strong></span><span class="meta">👥 Dominic</span><span class="meta">📍 Dunes Learning Center, Porter, IN</span><span class="note">💡 Camp runs Mon–Fri; he returns Saturday</span></div><div class="event"><span class="time">7am–6pm</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=Nzg3Njk4dTlsOWRrODV0YnVidHFwcDA2amJfMjAyNjA3MDZUMTIwMDAwWiBzYWJpbmEuZmVycmFyYW11bGxpbkBt" target="_blank">Sabina — Six Sigma Green Belt Training (Day 1 of 5)</a></strong></span><span class="meta">👥 Sabina</span><span class="meta">📍 Six Sigma Green Belt Class</span></div></div>
+        </details>
+        <details class="day-card" data-date="2026-07-07" open>
+          <summary><span class="day-label">Tue Jul 7</span><span class="day-count">3 events</span></summary>
+          <div class="day-events"><div class="event"><span class="time">All day</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=Y2JpMmJoM3JkaWN2djNndmZmNXNiYmxtbzQgc2FiaW5hLmZlcnJhcmFtdWxsaW5AbQ" target="_blank">Dom — Sleepaway Camp (Day 2)</a></strong></span><span class="meta">👥 Dominic</span><span class="meta">📍 Dunes Learning Center, Porter, IN</span></div><div class="event"><span class="time">7am–6pm</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=Nzg3Njk4dTlsOWRrODV0YnVidHFwcDA2amJfMjAyNjA3MDdUMTIwMDAwWiBzYWJpbmEuZmVycmFyYW11bGxpbkBt" target="_blank">Sabina — Six Sigma Green Belt Training (Day 2)</a></strong></span><span class="meta">👥 Sabina</span><span class="meta">📍 Six Sigma Green Belt Class</span></div><div class="event"><span class="time">5:30pm–9pm</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=YWdhNTVtcGgxbGFjOTEyM211bmxmcXNuNjRfMjAyNjA3MDdUMjIzMDAwWiBzYWJpbmEuZmVycmFyYW11bGxpbkBt" target="_blank">Tuesdays on the Terrace — Jazz</a></strong></span><span class="meta">📍 MCA Chicago, 220 E Chicago Ave</span></div></div>
+        </details>
+        <details class="day-card" data-date="2026-07-08" open>
+          <summary><span class="day-label">Wed Jul 8</span><span class="day-count">7 events</span></summary>
+          <div class="day-events"><div class="event"><span class="time">All day</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=Y2JpMmJoM3JkaWN2djNndmZmNXNiYmxtbzQgc2FiaW5hLmZlcnJhcmFtdWxsaW5AbQ" target="_blank">Dom — Sleepaway Camp (Day 3)</a></strong></span><span class="meta">👥 Dominic</span><span class="meta">📍 Dunes Learning Center, Porter, IN</span></div><div class="event"><span class="time">7am–6pm</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=Nzg3Njk4dTlsOWRrODV0YnVidHFwcDA2amJfMjAyNjA3MDhUMTIwMDAwWiBzYWJpbmEuZmVycmFyYW11bGxpbkBt" target="_blank">Sabina — Six Sigma Green Belt Training (Day 3)</a></strong></span><span class="meta">👥 Sabina</span><span class="meta">📍 Six Sigma Green Belt Class</span></div><div class="event"><span class="time">7:30am–4pm</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=a2gxN3BncmNodDNycWg2YWc0aDllYmJycDggbG11bW82OGNuZmo4YnJka2dmNm9hdDRkM2tAZw" target="_blank">Jr Lifeguard Competition — Albert Group A</a></strong></span><span class="meta">👥 Albert</span><span class="meta">📍 Montrose Beach, 4400 N Lake Shore Dr</span><span class="note">💡 Sabina is in training — Ben is dropping off. Events: 9:15 Distance Run, 12:45 Distance Swim, 2:00 Relay Dash, 3:00 Run-Swim-Run</span></div><div class="event"><span class="time">7:30am–9am</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=XzYwcTMwYzFnNjBvMzBlMWk2MG80YWMxZzYwcmo4Z3BsODhyajJjMWg4NHMzNGg5ZzYwczMwYzFnNjBvMzBjMWc4NHJqMmNhMTY5MTRhZHBsNjByazhoMWc2NG8zMGMxZzYwbzMwYzFnNjBvMzBjMWc2MG8zMmMxZzYwbzMwYzFnNjRzajZoaGs3NTFqYWdpMTg0cGpjZDlrOGgwa2NjOWk2OHBqZWhpMzZkMjM2YzluODkwZyBiZW4uc2NobXVja0Bt" target="_blank">Dominic and Simone — Reading Tutor Makeup Session (virtual)</a></strong></span><span class="meta">👥 Dominic</span><span class="note">💡 Virtual via Teams — Dominic can manage independently</span></div><div class="event"><span class="time">6:30pm–8:15pm</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=NDRpcHJxNDUzZGltZjIxYWI3dW9tYTZzc2pfMjAyNjA3MDhUMjMzMDAwWiBjX2E0MmRlZTU3NjRkM2Q0ZjJhOTFiZjY4YjYyOThiODk5ODI5YTE4Mzc5OTc5MjBhNjhjMzYzMGI3YTBkYjY5NGJAZw" target="_blank">Scout Troop — Cafeteria (ages 11–18)</a></strong></span><span class="meta">👥 Dominic</span></div><div class="event"><span class="time">7:30pm–9pm</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=XzYwcTMwYzFnNjBvMzBlMWk2MG80YWMxZzYwcmo4Z3BsODhyajJjMWg4NHMzNGg5ZzYwczMwYzFnNjBvMzBjMWc4aDBqMGRpNTZrcDM0aGExOGwyazhncGc2NG8zMGMxZzYwbzMwYzFnNjBvMzBjMWc2MG8zMmMxZzYwbzMwYzFnNzRwazJnaHA2c3BqYWQ5ZzZvcDM0Z3BrNjhzajhkaG02aDFrYWQxaTZ0MjMwZzlpOG9yZ18yMDI2MDcwOFQwMDMwMDBaIHNhYmluYS5mZXJyYXJhbXVsbGluQG0" target="_blank">Ben — Walk with Mike (Teams)</a></strong></span><span class="meta">👥 Ben</span></div><div class="event"><span class="time">7:45pm–9:15pm</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=dmc4NjczaGlrcnMzZG5pN3NrazdrdjY5aXMgc2FiaW5hLmZlcnJhcmFtdWxsaW5AbQ" target="_blank">Sabina — Therapy</a></strong></span><span class="meta">👥 Sabina</span></div></div>
+        </details>
+        <details class="day-card" data-date="2026-07-09" open>
+          <summary><span class="day-label">Thu Jul 9</span><span class="day-count">6 events</span></summary>
+          <div class="day-events"><div class="event"><span class="time">All day</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=Y2JpMmJoM3JkaWN2djNndmZmNXNiYmxtbzQgc2FiaW5hLmZlcnJhcmFtdWxsaW5AbQ" target="_blank">Dom — Sleepaway Camp (Day 4)</a></strong></span><span class="meta">👥 Dominic</span><span class="meta">📍 Dunes Learning Center, Porter, IN</span></div><div class="event"><span class="time">7am–6pm</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=Nzg3Njk4dTlsOWRrODV0YnVidHFwcDA2amJfMjAyNjA3MDlUMTIwMDAwWiBzYWJpbmEuZmVycmFyYW11bGxpbkBt" target="_blank">Sabina — Six Sigma Green Belt Training (Day 4)</a></strong></span><span class="meta">👥 Sabina</span><span class="meta">📍 Six Sigma Green Belt Class</span></div><div class="event"><span class="time">11:15am–12pm</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=XzYwcTMwYzFnNjBvMzBlMWk2MG80YWMxZzYwcmo4Z3BsODhyajJjMWg4NHMzNGg5ZzYwczMwYzFnNjBvMzBjMWc3NHBrNmg5azZrcjNhY2E0OGQxazhncGc2NG8zMGMxZzYwbzMwYzFnNjBvMzBjMWc2MG8zMmMxZzYwbzMwYzFnNjRwa2FkcG42b28zNmQ5aTZvcDM4ZGhrODkwazJjaTQ2ZDFrNmQ5bDg1MjM0ZGhuOGNzMF8yMDI2MDcwOVQxNjE1MDBaIGJlbi5zY2htdWNrQG0" target="_blank">Ben&#x27;s Therapy</a></strong></span><span class="meta">👥 Ben</span></div><div class="event"><span class="time">6pm</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=XzYwcTMwYzFnNjBvMzBlMWk2MG80YWMxZzYwcmo4Z3BsODhyajJjMWg4NHMzNGg5ZzYwczMwYzFnNjBvMzBjMWc2a29qZ2Uxazg4cDNjYzltNjBzazhoMWc2NG8zMGMxZzYwbzMwYzFnNjBvMzBjMWc2MG8zMmMxZzYwbzMwYzFnODkwamNkMWs2MG9qaWU5ajY0b2ppZ2hrODUwamNkOWc2OTIzNGdobjcwcGo0Y2kzNmNyMCBiZW4uc2NobXVja0Bt" target="_blank">Buy Chicago beer for Candy &amp; Greg</a></strong></span><span class="meta">👥 Ben</span><span class="note">💡 Reminder: pick up before Appleyard Party Sat Jul 11</span></div><div class="event"><span class="time">6pm–9:30pm</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=MmlhNDEybjJpZjlubWhidmR0cWI2bDhvaDRfMjAyNjA3MDlUMjMwMDAwWiBzYWJpbmEuZmVycmFyYW11bGxpbkBt" target="_blank">Millennium Park 6:30</a></strong></span><span class="meta">📍 Millennium Park, Chicago</span></div><div class="event"><span class="time">7:45pm–10pm</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=XzYwcTMwYzFnNjBvMzBlMWk2MG80YWMxZzYwcmo4Z3BsODhyajJjMWg4NHMzNGg5ZzYwczMwYzFnNjBvMzBjMWc2c3EzZWdobDhwMzNpZTFvNmdzazhnOWc2NG8zMGMxZzYwbzMwYzFnNjBvMzBjMWc2MG8zMmMxZzYwbzMwYzFnNjhxNGNjaGk2MHM0OGNoazZwMzM2aGhrNnNzM2djaTY2OG8zMGUxazhvc2ppZGkyNmwxMF8yMDI2MDcxMFQwMDQ1MDBaIHNhYmluYS5mZXJyYXJhbXVsbGluQG0" target="_blank">Basketball (Ben — work game, Teams)</a></strong></span><span class="meta">👥 Ben</span></div></div>
+        </details>
+        <details class="day-card" data-date="2026-07-10" open>
+          <summary><span class="day-label">Fri Jul 10</span><span class="day-count">3 events</span></summary>
+          <div class="day-events"><div class="event"><span class="time">All day</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=Y2JpMmJoM3JkaWN2djNndmZmNXNiYmxtbzQgc2FiaW5hLmZlcnJhcmFtdWxsaW5AbQ" target="_blank">Dom — Sleepaway Camp (last day)</a></strong></span><span class="meta">👥 Dominic</span><span class="meta">📍 Dunes Learning Center, Porter, IN</span></div><div class="event"><span class="time">All day</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=Y2twNWlqcWs2N3J2cThidWRyNHJzbWQwaDggc2FiaW5hLmZlcnJhcmFtdWxsaW5AbQ" target="_blank">Square Roots Festival (Fri–Sun)</a></strong></span><span class="meta">📍 Lincoln Square, Chicago</span></div><div class="event"><span class="time">7am–6pm</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=Nzg3Njk4dTlsOWRrODV0YnVidHFwcDA2amJfMjAyNjA3MTBUMTIwMDAwWiBzYWJpbmEuZmVycmFyYW11bGxpbkBt" target="_blank">Sabina — Six Sigma Green Belt Training (Day 5 — last day)</a></strong></span><span class="meta">👥 Sabina</span><span class="meta">📍 Six Sigma Green Belt Class</span></div></div>
+        </details>
+        <details class="day-card" data-date="2026-07-11" open>
+          <summary><span class="day-label">Sat Jul 11</span><span class="day-count">5 events</span></summary>
+          <div class="day-events"><div class="event"><span class="time">7:15am–8:45am</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=XzZsMmthaGkyOGNzM2FiOWk3NHJrY2I5azc1MjRhYjlwOGNwM2liOWw4Z29qYWUxaDc0bzNnZHBtNmNfMjAyNjA3MTFUMTIxNTAwWiBiZW4uc2NobXVja0Bt" target="_blank">Grocery Shopping</a></strong></span><span class="meta">👥 Ben, Sabina</span></div><div class="event"><span class="time">9am–10am</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=XzYwcTMwYzFnNjBvMzBlMWk2MG80YWMxZzYwcmo4Z3BsODhyajJjMWg4NHMzNGg5ZzYwczMwYzFnNjBvMzBjMWc4OHJqYWNhNjY1MzNlZ2hsNjBvNDhoMWc2NG8zMGMxZzYwbzMwYzFnNjBvMzBjMWc2MG8zMmMxZzYwbzMwYzFnNjUxNDZncGk2NHEzOGQyNThjcGo2aDlrODRzMzBkaTY4OTM0MmNwaThwMGo0Y2hwNzRzMCBzYWJpbmEuZmVycmFyYW11bGxpbkBt" target="_blank">Discuss: What should the boys wear to Rose Claire&#x27;s wedding?</a></strong></span><span class="meta">👥 Ben, Sabina</span><span class="note">💡 Coordinate outfits for the boys before wedding</span></div><div class="event"><span class="time">10am–noon</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=XzYwcTMwYzFnNjBvMzBlMWk2MG80YWMxZzYwcmo4Z3BsODhyajJjMWg4NHMzNGg5ZzYwczMwYzFnNjBvMzBjMWc3MHJrYWRobjY4czM0ZHBnOG9wazhncGc2NG8zMGMxZzYwbzMwYzFnNjBvMzBjMWc2MG8zMmMxZzYwbzMwYzFnNjkzMzBncTE2bDIzY2hoaDhwMzMyZ2hrNzUwamllOWk2Y3BqNmdwaTZvcjQ4aDFoNzBzMF8yMDI2MDcxMVQxNTAwMDBaIHNhYmluYS5mZXJyYXJhbXVsbGluQG0" target="_blank">Dominic — Reading Tutor with Simone (virtual)</a></strong></span><span class="meta">👥 Dominic</span></div><div class="event"><span class="time">Noon–4pm</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=XzYwcTMwYzFnNjBvMzBlMWk2MG80YWMxZzYwcmo4Z3BsODhyajJjMWg4NHMzNGg5ZzYwczMwYzFnNjBvMzBjMWc2Y3EzZ2gyMzhrczRjY3BnNjBzNDhoMWc2NG8zMGMxZzYwbzMwYzFnNjBvMzBjMWc2MG8zMmMxZzYwbzMwYzFnOGwxNGFjcTU2OTMzZWRhNjY0cDNhZ2hrOGtzNDJlMjI2a29qOGg5bzc1MzM2Y2k1OGNzMCBiZW4uc2NobXVja0Bt" target="_blank">Appleyard Party at Candy&#x27;s — Drive to Yorkville</a></strong></span><span class="meta">👥 Ben, Sabina</span><span class="meta">📍 406 W Kendall Dr, Yorkville, IL</span><span class="note">💡 Bring Chicago beer for Candy &amp; Greg</span></div><div class="event"><span class="time">2pm–7:30pm</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=YmpzdnRyOG8zaTcyMmMxazdyajNjMjE0Ymcgc2FiaW5hLmZlcnJhcmFtdWxsaW5AbQ" target="_blank">Levi&#x27;s Block Party</a></strong></span><span class="meta">👥 Sabina</span></div></div>
+        </details>
+        <details class="day-card" data-date="2026-07-12" open>
+          <summary><span class="day-label">Sun Jul 12</span><span class="day-count">3 events</span></summary>
+          <div class="day-events"><div class="event"><span class="time">9am–10:30am</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=NzVoM2FkaGc2dGg2Y2I5cDYwcTYyYjlrNmRoajZiOW9ja3MzMGJiNjZvcW0ycDlqNmRoNmFjOWc2OF8yMDI2MDcxMlQxNDAwMDBaIHNhYmluYS5mZXJyYXJhbXVsbGluQG0" target="_blank">Church</a></strong></span><span class="meta">👥 Sabina</span></div><div class="event"><span class="time">11am–noon</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=NjExNHBxZ3UxOXNtazFxc3Q0c2Y0bDNidW9fMjAyNjA3MTJUMTYwMDAwWiBiZW4uc2NobXVja0Bt" target="_blank">Update Finances, Transfer $, Pay CCs</a></strong></span><span class="meta">👥 Ben, Sabina</span></div><div class="event"><span class="time">5pm–9:30pm</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=NDljOTI3dTQxcWF1bTFtYjY2MzF1cmV0Y2sgc2FiaW5hLmZlcnJhcmFtdWxsaW5AbQ" target="_blank">Celebrate GRose Birthday</a></strong></span><span class="meta">📍 Scoville Park, Oak Park, IL</span><span class="note">💡 Key Suspects band (modern &amp; classic rock covers). Free outdoor concert.</span></div></div>
+        </details>
+        <details class="day-card" data-date="2026-07-13" open>
+          <summary><span class="day-label">Mon Jul 13</span><span class="day-count">2 events</span></summary>
+          <div class="day-events"><div class="event"><span class="time">All day</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=XzYwcTMwYzFnNjBvMzBlMWk2MG80YWMxZzYwcmo4Z3BsODhyajJjMWg4NHMzNGg5ZzYwczMwYzFnNjBvMzBjMWc4aDFqMGMxaTZwMTM4aDluOGgzNDhncGc2NG8zMGMxZzYwbzMwYzFnNjBvMzBjMWc2MG8zMmMxZzYwbzMwYzFnNjBxNDJkaTE2MTBrNGRwbjZkMGowaDFrNmtzamFkMWo3NHJrNmVhMjcwcGowZWEzOGdyMF8yMDI2MDcxMyBzYWJpbmEuZmVycmFyYW11bGxpbkBt" target="_blank">Amy Li in Town</a></strong></span><span class="meta">👥 Ben, Sabina</span></div><div class="event"><span class="time">6pm–9:30pm</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=MmlhNDEybjJpZjlubWhidmR0cWI2bDhvaDRfMjAyNjA3MTNUMjMwMDAwWiBzYWJpbmEuZmVycmFyYW11bGxpbkBt" target="_blank">Millennium Park 6:30</a></strong></span><span class="meta">📍 Millennium Park, Chicago</span></div></div>
+        </details><h2 class="next-week-header">📅 Next Week</h2>
+        <details class="day-card" data-date="2026-07-14" open>
+          <summary><span class="day-label">Tue Jul 14</span><span class="day-count">4 events</span></summary>
+          <div class="day-events"><div class="event"><span class="time">All day</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=XzYwcTMwYzFnNjBvMzBlMWk2MG80YWMxZzYwcmo4Z3BsODhyajJjMWg4NHMzNGg5ZzYwczMwYzFnNjBvMzBjMWc4aDFqMGMxaTZwMTM4aDluOGgzNDhncGc2NG8zMGMxZzYwbzMwYzFnNjBvMzBjMWc2MG8zMmMxZzYwbzMwYzFnNjBxNDJkaTE2MTBrNGRwbjZkMGowaDFrNmtzamFkMWo3NHJrNmVhMjcwcGowZWEzOGdyMF8yMDI2MDcxNCBzYWJpbmEuZmVycmFyYW11bGxpbkBt" target="_blank">Amy Li in Town (Day 2)</a></strong></span><span class="meta">👥 Ben, Sabina</span></div><div class="event"><span class="time">7:45am–9am</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=OGpzbzZudTRwYWM2dmVtbXI4aHQ4a2Y1dGsgc2FiaW5hLmZlcnJhcmFtdWxsaW5AbQ" target="_blank">Albert — Katrina (appointment)</a></strong></span><span class="meta">👥 Albert</span></div><div class="event"><span class="time">5pm–7pm</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=XzYwcTMwYzFnNjBvMzBlMWk2MG80YWMxZzYwcmo4Z3BsODhyajJjMWg4NHMzNGg5ZzYwczMwYzFnNjBvMzBjMWc2MTIzMGNwaThwMzRhZ2hwOGtwazhncGc2NG8zMGMxZzYwbzMwYzFnNjBvMzBjMWc2MG8zMmMxZzYwbzMwYzFnODhwa2FlOW02a3EzMGU5aTg5MjMwZ2hrNmtzNDJkOWw2NTFrYWQyNDhrcjQ4ZHEzNmtvZyBzYWJpbmEuZmVycmFyYW11bGxpbkBt" target="_blank">Dinner with Fabian &amp; Amy Li in Oak Park</a></strong></span><span class="meta">👥 Ben, Sabina</span><span class="meta">📍 Oak Park, IL</span></div><div class="event"><span class="time">5:30pm–6:30pm</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=MWg1djhmdmY0ZGJ0bWRjZGR2bmVrb2xhdWdfMjAyNjA3MTRUMjIzMDAwWiBiZW4uc2NobXVja0Bt" target="_blank">Dominic and Becca Meet (therapy)</a></strong></span><span class="meta">👥 Dominic</span></div></div>
+        </details>
+        <details class="day-card" data-date="2026-07-15" open>
+          <summary><span class="day-label">Wed Jul 15</span><span class="day-count">6 events</span></summary>
+          <div class="day-events"><div class="event"><span class="time">All day</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=XzYwcTMwYzFnNjBvMzBlMWk2MG80YWMxZzYwcmo4Z3BsODhyajJjMWg4NHMzNGg5ZzYwczMwYzFnNjBvMzBjMWc4aDFqMGMxaTZwMTM4aDluOGgzNDhncGc2NG8zMGMxZzYwbzMwYzFnNjBvMzBjMWc2MG8zMmMxZzYwbzMwYzFnNjBxNDJkaTE2MTBrNGRwbjZkMGowaDFrNmtzamFkMWo3NHJrNmVhMjcwcGowZWEzOGdyMF8yMDI2MDcxNSBzYWJpbmEuZmVycmFyYW11bGxpbkBt" target="_blank">Amy Li in Town (Day 3)</a></strong></span><span class="meta">👥 Ben, Sabina</span></div><div class="event"><span class="time">All day</span><span class="title"><em class="school">🏫 <a href="https://www.google.com/calendar/event?eid=MXZwOGxqaHZoNXNxOW5tNXZtbzJ1aWVuY2QgY19hNDJkZWU1NzY0ZDNkNGYyYTkxYmY2OGI2Mjk4Yjg5OTgyOWExODM3OTk3OTIwYTY4YzM2MzBiN2EwZGI2OTRiQGc" target="_blank">FSP August Lunch Orders Open</a></em></span><span class="note">💡 Window to order St. Helen lunch for August</span></div><div class="event"><span class="time">7:30am–4pm</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=b2poajBtMHFuZ2wzMDU5djUxdWFrcDVncGcgbG11bW82OGNuZmo4YnJka2dmNm9hdDRkM2tAZw" target="_blank">Jr Lifeguard Competition — Albert &amp; Dom</a></strong></span><span class="meta">👥 Albert, Dominic</span><span class="meta">📍 Rainbow Beach, IL 60649</span><span class="note">💡 Albert Group A, Dom Group C. Competition times TBD.</span></div><div class="event"><span class="time">5:30pm–7:15pm</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=MTZuajN1cHVxdHNodHU3ajRtMGpuMmlpY29fMjAyNjA3MTVUMjIzMDAwWiBjX2E0MmRlZTU3NjRkM2Q0ZjJhOTFiZjY4YjYyOThiODk5ODI5YTE4Mzc5OTc5MjBhNjhjMzYzMGI3YTBkYjY5NGJAZw" target="_blank">Cub Scouts — Cafeteria (ages 5–10)</a></strong></span></div><div class="event"><span class="time">5pm–9:30pm</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=ZDRmMDVmYmM2cGU4MmUyNDRtbW12Njh1cGdfMjAyNjA3MTVUMjIwMDAwWiBzYWJpbmEuZmVycmFyYW11bGxpbkBt" target="_blank">Jazzin at the Shedd</a></strong></span><span class="meta">📍 Shedd Aquarium, 1200 S DuSable Lake Shore Dr</span></div><div class="event"><span class="time">6pm–9pm</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=dDV0NnI2Y2docGxjdTUzdGZsZXA5bzhyc28gc2FiaW5hLmZlcnJhcmFtdWxsaW5AbQ" target="_blank">Water Polo Club Tryout — NOT CONFIRMED</a></strong></span><span class="meta">👥 Albert</span><span class="meta">📍 Whitney M. Young Magnet HS, 211 S Laflin St</span><span class="note">💡 Still unconfirmed — verify before heading over. Same day as lifeguard comp!</span></div></div>
+        </details>
+        <details class="day-card" data-date="2026-07-16" open>
+          <summary><span class="day-label">Thu Jul 16</span><span class="day-count">4 events</span></summary>
+          <div class="day-events"><div class="event"><span class="time">All day</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=XzhvbzNjYzlvNjRvazhnOW44Z28zOGUxcDg0c2o4aDIyNm9zMzBkaTE3MTEzY2NoajhvcGowYzFnNjBvMzBjMWc2MG8zMGMxZzYwbzMwYzFnNjBvMzBjMWc2MG8zMGMxZzYwbzMwYzBfMjAyNjA3MTYgYmVuLnNjaG11Y2tAbQ" target="_blank">Marirose Bday 🎂</a></strong></span></div><div class="event"><span class="time">11:15am–noon</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=XzYwcTMwYzFnNjBvMzBlMWk2MG80YWMxZzYwcmo4Z3BsODhyajJjMWg4NHMzNGg5ZzYwczMwYzFnNjBvMzBjMWc3NHBrNmg5azZrcjNhY2E0OGQxazhncGc2NG8zMGMxZzYwbzMwYzFnNjBvMzBjMWc2MG8zMmMxZzYwbzMwYzFnNjRwa2FkcG42b28zNmQ5aTZvcDM4ZGhrODkwazJjaTQ2ZDFrNmQ5bDg1MjM0ZGhuOGNzMF8yMDI2MDcxNlQxNjE1MDBaIGJlbi5zY2htdWNrQG0" target="_blank">Ben&#x27;s Therapy</a></strong></span><span class="meta">👥 Ben</span></div><div class="event"><span class="time">6pm–9:30pm</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=MmlhNDEybjJpZjlubWhidmR0cWI2bDhvaDRfMjAyNjA3MTZUMjMwMDAwWiBzYWJpbmEuZmVycmFyYW11bGxpbkBt" target="_blank">Millennium Park 6:30</a></strong></span><span class="meta">📍 Millennium Park — Maureen &amp; Grandkids, Mom &amp; Dad, Lena &amp; Carm</span></div><div class="event"><span class="time">7:45pm–10pm</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=XzYwcTMwYzFnNjBvMzBlMWk2MG80YWMxZzYwcmo4Z3BsODhyajJjMWg4NHMzNGg5ZzYwczMwYzFnNjBvMzBjMWc2c3EzZWdobDhwMzNpZTFvNmdzazhnOWc2NG8zMGMxZzYwbzMwYzFnNjBvMzBjMWc2MG8zMmMxZzYwbzMwYzFnNjhxNGNjaGk2MHM0OGNoazZwMzM2aGhrNnNzM2djaTY2OG8zMGUxazhvc2ppZGkyNmwxMF8yMDI2MDcxN1QwMDQ1MDBaIHNhYmluYS5mZXJyYXJhbXVsbGluQG0" target="_blank">Basketball (Ben — work game, Teams)</a></strong></span><span class="meta">👥 Ben</span></div></div>
+        </details>
+        <details class="day-card" data-date="2026-07-17" open>
+          <summary><span class="day-label">Fri Jul 17</span><span class="day-count">4 events</span></summary>
+          <div class="day-events"><div class="event"><span class="time">All day</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=MTNxOGwydjYzcTVrbWhpdmNhbWc4YnNrcDQgc2FiaW5hLmZlcnJhcmFtdWxsaW5AbQ" target="_blank">Tacos y Tamales Festival (Fri–Sun)</a></strong></span></div><div class="event"><span class="time">All day</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=a2F1aDdoNmxudWYzOW40M3ZuZ2VxOW1uaW8gc2FiaW5hLmZlcnJhcmFtdWxsaW5AbQ" target="_blank">Roscoe Village Burger Fest (Fri–Sun)</a></strong></span></div><div class="event"><span class="time">9am–10am</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=MmJjazY4MTE5ZmU5YW04Y2YyOXJvdjA3NzYgY19hNDJkZWU1NzY0ZDNkNGYyYTkxYmY2OGI2Mjk4Yjg5OTgyOWExODM3OTk3OTIwYTY4YzM2MzBiN2EwZGI2OTRiQGc" target="_blank">Summer Talent Show</a></strong></span><span class="meta">👥 Dominic</span></div><div class="event"><span class="time">7pm–9:30pm</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=djQ2cDRwZzNoNWplM2hpc2lkcTA0NXBoYjQgc2FiaW5hLmZlcnJhcmFtdWxsaW5AbQ" target="_blank">Sabina — Dinner with Math Margaret</a></strong></span><span class="meta">👥 Sabina</span><span class="meta">📍 Bungalow by Middle Brow, 2840 W Armitage Ave</span></div></div>
+        </details>
+        <details class="day-card" data-date="2026-07-18" open>
+          <summary><span class="day-label">Sat Jul 18</span><span class="day-count">1 event</span></summary>
+          <div class="day-events"><div class="event"><span class="time">7:15am–8:45am</span><span class="title"><strong><a href="https://www.google.com/calendar/event?eid=XzZsMmthaGkyOGNzM2FiOWk3NHJrY2I5azc1MjRhYjlwOGNwM2liOWw4Z29qYWUxaDc0bzNnZHBtNmNfMjAyNjA3MThUMTIxNTAwWiBiZW4uc2NobXVja0Bt" target="_blank">Grocery Shopping</a></strong></span><span class="meta">👥 Ben, Sabina</span></div></div>
+        </details>
+        <details class="day-card" data-date="2026-07-19" open>
+          <summary><span class="day-label">Sun Jul 19</span><span class="day-count">1 event</span></summary>
+          <div class="day-events"><div class="event"><span class="time">9am–10:30am</span><span class="title"><strong>Church</strong></span><span class="meta">👥 Sabina</span></div></div>
+        </details></section>
+  <section id="planning"><h2>📅 Planning Ahead</h2><div class="plan-item"><span class="plan-date">Jul 22</span> <span class="plan-text"><a href="https://www.google.com/calendar/event?eid=cXMzNmIyaW1qZ2JjYTFoOWUxMWFqbjhtYmsgbG11bW82OGNuZmo4YnJka2dmNm9hdDRkM2tAZw" target="_blank">Jr Lifeguard Competition — 63rd Street Beach</a></span></div><div class="plan-item"><span class="plan-date">Jul 24–28</span> <span class="plan-text"><a href="https://www.google.com/calendar/event?eid=YmRlZmpsZGwzam5hbmRtcms1b3IwcmtjNTAgbG11bW82OGNuZmo4YnJka2dmNm9hdDRkM2tAZw" target="_blank">Nina and All in Two Rivers (family trip placeholder)</a></span></div><div class="plan-item"><span class="plan-date">Jul 29</span> <span class="plan-text"><a href="https://www.google.com/calendar/event?eid=NmYxM3RjcXR1NXA5OTAwY2RndWlpY3NoZDggc2FiaW5hLmZlcnJhcmFtdWxsaW5AbQ" target="_blank">Makeup Jr Lifeguard Competition — Albert, Montrose Beach</a></span></div><div class="plan-item"><span class="plan-date">Jul 29</span> <span class="plan-text"><a href="https://www.google.com/calendar/event?eid=ZDRmMDVmYmM2cGU4MmUyNDRtbW12Njh1cGdfMjAyNjA3MjlUMjIwMDAwWiBzYWJpbmEuZmVycmFyYW11bGxpbkBt" target="_blank">Jazzin at the Shedd (evening)</a></span></div><div class="plan-item"><span class="plan-date">Jul 29–Aug 1</span> <span class="plan-text"><a href="https://www.google.com/calendar/event?eid=MWhiOTluaDI4MzBiajFmdGs4Nzg4cmFjc28gc2FiaW5hLmZlcnJhcmFtdWxsaW5AbQ" target="_blank">Visit Carole, Fredericka, and Betsy (Jul 29–Aug 1)</a></span><details class="sub-list"><summary>🎁 What to bring <span class="badge">💡 Suggested</span></summary><ul><li>flowers or a bottle of wine as a hostess gift</li></ul></details></div><div class="plan-item"><span class="plan-date">Aug 1</span> <span class="plan-text">Create CPS Email Account for Albert — needed before Quick Start Registration Aug 13</span></div><div class="plan-item"><span class="plan-date">Aug 13</span> <span class="plan-text"><a href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Lane%20Tech%20Quick%20Start%20Registration%20%E2%80%94%20Albert&amp;dates=20260813/20260814&amp;details=Source%3A%20lanetech.org/freshmen/&amp;location=Lane%20Tech%20College%20Prep%20High%20School" target="_blank">Lane Tech Quick Start Registration — Albert (not yet on calendar)</a></span></div><div class="plan-item"><span class="plan-date">Aug 19</span> <span class="plan-text"><a href="https://www.google.com/calendar/event?eid=MzhndWVyMHFtNHJpaHMwaTVmbTl0dmowZ20gc2FiaW5hLmZlcnJhcmFtdWxsaW5AbQ" target="_blank">Lane Freshman Orientation 2pm–6pm — Albert</a></span></div><div class="plan-item"><span class="plan-date">Aug 20</span> <span class="plan-text"><a href="https://www.google.com/calendar/event?eid=NjEzMG4wcWtycmJsYTgzMjEyMjRvMW8ybmwgc2FiaW5hLmZlcnJhcmFtdWxsaW5AbQ" target="_blank">Dom — 1st Day of School at St. Helen</a></span></div><div class="plan-item"><span class="plan-date">Aug 21</span> <span class="plan-text"><a href="https://www.google.com/calendar/event?eid=aWNqdWh1czY0OXRtYjI5aWdlNGJwM2JnM3Mgc2FiaW5hLmZlcnJhcmFtdWxsaW5AbQ" target="_blank">Alpha STEM Welcome Day — Lane Tech (Albert + parents) 8:45am–11:30am</a></span></div><div class="plan-item"><span class="plan-date">Aug 24</span> <span class="plan-text"><a href="https://www.google.com/calendar/event?eid=ZWhnYTZqZmNqYW45b2RwMTIybzRkdjVkbmcgc2FiaW5hLmZlcnJhcmFtdWxsaW5AbQ" target="_blank">Albert — First Day at Lane Tech 🎒</a></span></div><div class="plan-item"><span class="plan-date">Aug 25</span> <span class="plan-text"><a href="https://www.google.com/calendar/event?eid=NDJxbHB1cXVybWlnY2Zxb3VtMjZ1bzU1bDAgc2FiaW5hLmZlcnJhcmFtdWxsaW5AbQ" target="_blank">Albert: Alpha English I Summer Assignment Due — read Into the Wild (Jon Krakauer), complete analysis table</a></span></div><div class="plan-item"><span class="plan-date">Aug 27</span> <span class="plan-text"><a href="https://www.google.com/calendar/event?eid=MXBhbTEzc3QwNzRjMzZwbWlwZWFzNnJtZmggc2FiaW5hLmZlcnJhcmFtdWxsaW5AbQ" target="_blank">St. Helen Back to School Night — Ben &amp; Sabina (3pm–7pm)</a></span></div><div class="plan-item"><span class="plan-date">Sep 4</span> <span class="plan-text"><a href="https://www.google.com/calendar/event?eid=dTlzOWtyMWtxcGRldjRsN3RxcTQ2cm1mMWcgc2FiaW5hLmZlcnJhcmFtdWxsaW5AbQ" target="_blank">Dom — Cardiologist at Lurie&#x27;s (8am)</a></span></div></section>
+  <footer>Cal · Tasklet · Week of Jul 6</footer>
+</body>
+</html>
