@@ -439,14 +439,15 @@
 
     function autoMoveToAcked(item) {
       var id = item.dataset.ackId;
-      var doneList = document.getElementById('done-list');
+      ensureDoneSection();                  // create section first
       var clone = buildDoneClone(item, function(c) {
         manuallyRestored.add(id);
         item.style.display = '';
         c.remove();
         updateDoneCount();
       });
-      doneList.appendChild(clone);
+      item.style.display = 'none';          // hide original
+      document.getElementById('done-list').appendChild(clone);
       updateDoneCount();
     }
 
