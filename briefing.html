@@ -266,10 +266,11 @@
   </style>
   <script>
     // ── GitHub sync config ────────────────────────────────────────────────────
-    var GH_TOKEN  = 'NEEDS_TOKEN';           // fine-grained PAT, contents R/W
+    var GH_TOKEN_KEY = 'cal-briefing-gh-token';  // stored in localStorage per device
     var GH_RAW    = 'https://raw.githubusercontent.com/benman3722/tasklet/main/acked-items.json';
     var GH_API    = 'https://api.github.com/repos/benman3722/tasklet/contents/acked-items.json';
     var GH_CACHE  = 'cal-briefing-gh-cache';
+    function getToken() { return localStorage.getItem(GH_TOKEN_KEY) || ''; }
 
     // In-memory ack set (source of truth once loaded)
     var ackedIds       = new Set();
@@ -296,14 +297,36 @@
       if (msg) el._t = setTimeout(function() { el.textContent = ''; }, 3000);
     }
 
+    // ── First-time token setup banner ─────────────────────────────────────────
+    function showTokenBanner() {
+      var banner = document.getElementById('token-banner');
+      if (!banner) return;
+      banner.style.display = getToken() ? 'none' : 'flex';
+    }
+    function saveToken() {
+      var inp = document.getElementById('token-input');
+      var val = (inp && inp.value.trim()) || '';
+      if (!val) return;
+      localStorage.setItem(GH_TOKEN_KEY, val);
+      document.getElementById('token-banner').style.display = 'none';
+      loadFromGitHub();
+    }
+    function clearToken() {
+      localStorage.removeItem(GH_TOKEN_KEY);
+      showTokenBanner();
+      showSync('Token cleared — acks are device-only', '#e67e22');
+    }
+
     // ── GitHub read ───────────────────────────────────────────────────────────
     function loadFromGitHub() {
       // Instantly apply cache so page feels snappy
       ackedIds = readCache();
       if (ackedIds.size > 0) applyAckedSet(false);
 
-      if (!GH_TOKEN || GH_TOKEN === 'NEEDS_TOKEN') {
-        showSync('⚠ Acks are device-only — token not set', '#e67e22');
+      var tok = getToken();
+      if (!tok) {
+        showSync('⚠ No sync token — acks are device-only', '#e67e22');
+        showTokenBanner();
         return;
       }
       showSync('⟳ Syncing…');
@@ -329,20 +352,21 @@
     }
 
     function pushToGitHub() {
-      if (!GH_TOKEN || GH_TOKEN === 'NEEDS_TOKEN') return;
+      var tok = getToken();
+      if (!tok) return;
       showSync('⟳ Saving…');
       var body = JSON.stringify({ackedIds: Array.from(ackedIds)}, null, 2);
       var b64  = btoa(unescape(encodeURIComponent(body)));
       // Need current SHA first
       fetch(GH_API, {
-        headers: {'Authorization': 'token ' + GH_TOKEN, 'Accept': 'application/vnd.github.v3+json'}
+        headers: {'Authorization': 'token ' + tok, 'Accept': 'application/vnd.github.v3+json'}
       })
         .then(function(r) { return r.json(); })
         .then(function(meta) {
           return fetch(GH_API, {
             method: 'PUT',
             headers: {
-              'Authorization': 'token ' + GH_TOKEN,
+              'Authorization': 'token ' + tok,
               'Accept': 'application/vnd.github.v3+json',
               'Content-Type': 'application/json'
             },
@@ -475,6 +499,7 @@
       if (card) { card.classList.add('today'); card.open = true; }
 
       setupAckButtons();
+      showTokenBanner();
       loadFromGitHub();   // loads cache instantly, then syncs from GitHub async
       autoAckPastEvents();
       updateDoneCount();
@@ -485,8 +510,14 @@
   <header>
     <div class="week">Week of Jul 6</div>
     <h1>Albert&#x27;s Jr Lifeguard debut, road trip to Yorkville, and Amy Li in town</h1>
-    <div class="generated">Updated 2026-07-12T07:00:00-05:00 &nbsp;<span id="sync-status" style="font-size:11px"></span></div>
+    <div class="generated">Updated 2026-07-12T07:00:00-05:00 &nbsp;<span id="sync-status" style="font-size:11px"></span> &nbsp;<button onclick="clearToken()" style="font-size:10px;padding:2px 6px;background:none;border:1px solid #ccc;border-radius:4px;cursor:pointer;color:#888" title="Clear sync token">⚙ Sync</button></div>
   </header>
+  <div id="token-banner" style="display:none;align-items:center;gap:8px;background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:10px 14px;margin:12px 0;flex-wrap:wrap">
+    <span style="font-size:13px">🔑 <strong>Set up cross-device sync:</strong> paste your GitHub token once per browser</span>
+    <input id="token-input" type="password" placeholder="github_pat_…" style="flex:1;min-width:180px;font-size:12px;padding:4px 8px;border:1px solid #ccc;border-radius:4px">
+    <button onclick="saveToken()" style="padding:4px 12px;background:#27ae60;color:white;border:none;border-radius:4px;cursor:pointer;font-size:12px">Save</button>
+    <button onclick="document.getElementById('token-banner').style.display='none'" style="padding:4px 8px;background:none;border:1px solid #ccc;border-radius:4px;cursor:pointer;font-size:12px">Dismiss</button>
+  </div>
   
   <section id="top3"><h2>⚡ Top 3 Things to Know</h2><ul><li class="ack-item" data-ack-id="ack-adb5309bbd">🏊 <a href="https://www.google.com/calendar/event?eid=a2gxN3BncmNodDNycWg2YWc0aDllYmJycDggbG11bW82OGNuZmo4YnJka2dmNm9hdDRkM2tAZw" target="_blank">Albert&#x27;s Jr Lifeguard Competition — Wed Jul 8 at Montrose Beach. Ben is on drop-off duty (Sabina&#x27;s in training all week).</a></li><li class="ack-item" data-ack-id="ack-e4f3076584">🎉 <a href="https://www.google.com/calendar/event?eid=XzYwcTMwYzFnNjBvMzBlMWk2MG80YWMxZzYwcmo4Z3BsODhyajJjMWg4NHMzNGg5ZzYwczMwYzFnNjBvMzBjMWc2Y3EzZ2gyMzhrczRjY3BnNjBzNDhoMWc2NG8zMGMxZzYwbzMwYzFnNjBvMzBjMWc2MG8zMmMxZzYwbzMwYzFnOGwxNGFjcTU2OTMzZWRhNjY0cDNhZ2hrOGtzNDJlMjI2a29qOGg5bzc1MzM2Y2k1OGNzMCBiZW4uc2NobXVja0Bt" target="_blank">Road trip to Yorkville for Appleyard Party at Candy&#x27;s — Sat Jul 11. Don&#x27;t forget: Chicago beer for Candy &amp; Greg!</a></li><li class="ack-item" data-ack-id="ack-d9423d49c9">🎓 <a href="https://www.google.com/calendar/event?eid=ZWhnYTZqZmNqYW45b2RwMTIybzRkdjVkbmcgc2FiaW5hLmZlcnJhcmFtdWxsaW5AbQ" target="_blank">Albert&#x27;s Lane Tech countdown: Freshman Orientation Aug 19, Alpha STEM Welcome Day Aug 21, First Day Aug 24. English summer assignment (Into the Wild) due Aug 25.</a></li></ul></section>
   <section id="daily-updates"><h2>⚡ Mid-Week Updates</h2><div class="ack-item daily-update daily-update-reminder" data-ack-id="ack-8181d5785c"><div class="du-header"><span class="du-icon">🔔</span><span class="du-type">Reminder</span></div><div class="du-text">State Farm Rental Condo Unitowners policy renewal available (Policy #93-CY-Y356-2) — review and pay.</div><div class="du-source"><a href="https://mail.google.com/mail/u/ben.schmuck@gmail.com/#inbox/19f518358e2e6bf4" target="_blank">📧 Your State Farm Rental Condo Unitowners renewal is available.</a>&ensp;·&ensp;Spotted 2026-07-12</div></div><div class="ack-item daily-update daily-update-reminder" data-ack-id="ack-814d38cf8e"><div class="du-header"><span class="du-icon">🔔</span><span class="du-type">Reminder</span><span class="du-related">re: Update Finances, Transfer $, Pay CCs</span></div><div class="du-text">ComEd monthly bill (account ending 5000) is ready — pay or view online during today&#x27;s finances session.</div><div class="du-source"><a href="https://mail.google.com/mail/u/ben.schmuck@gmail.com/#inbox/19f51a11012131b3" target="_blank">📧 Your Bill is ready for viewing online.</a>&ensp;·&ensp;Spotted 2026-07-12</div></div><div class="ack-item daily-update daily-update-reminder" data-ack-id="ack-ca684e955c"><div class="du-header"><span class="du-icon">🔔</span><span class="du-type">Reminder</span></div><div class="du-text">Scholastic Dollars shopping cart and wish lists will be cleared after July 13 — complete any purchases before they&#x27;re gone.</div><div class="du-source"><a href="https://mail.google.com/mail/u/ben.schmuck@gmail.com/#inbox/19f5633df81a0177" target="_blank">📧 Final reminder: your shopping cart and wish lists will be cleared after July 13</a>&ensp;·&ensp;Spotted 2026-07-12</div></div><div class="ack-item daily-update daily-update-what-to-bring" data-ack-id="ack-5e1b1eab65"><div class="du-header"><span class="du-icon">🎒</span><span class="du-type">What to Bring</span><span class="du-related">re: Jr Lifeguard Competition — Albert &amp; Dom</span></div><div class="du-text">Jr Lifeguard coordinator (Jeremy Siegel) confirmed Jul 15 Rainbow Beach comp is on — he&#x27;ll bring a cooler; consider packing snacks for Albert &amp; Dom.</div><div class="du-source"><a href="https://mail.google.com/mail/u/ben.schmuck@gmail.com/#inbox/19f4753b2a9359b1" target="_blank">📧 Next week&#x27;s competition</a>&ensp;·&ensp;Spotted 2026-07-10</div></div><div class="ack-item daily-update daily-update-reminder" data-ack-id="ack-92df4324ea"><div class="du-header"><span class="du-icon">🔔</span><span class="du-type">Reminder</span></div><div class="du-text">St. Helen automatic tuition payment scheduled for 2026-2027 school year — confirm bank account has sufficient funds.</div><div class="du-source"><a href="https://mail.google.com/mail/u/ben.schmuck@gmail.com/#inbox/19f4afe77ad4ea02" target="_blank">📧 REMINDER: St Helen Elementary School Automatic Payment</a>&ensp;·&ensp;Spotted 2026-07-10</div></div><div class="ack-item daily-update daily-update-reminder" data-ack-id="ack-0c5070eabb"><div class="du-header"><span class="du-icon">🔔</span><span class="du-type">Reminder</span></div><div class="du-text">Sabina forwarded a United Airlines flight itinerary (confirmation OS1RXQ) to the family — review for upcoming trip details.</div><div class="du-source"><a href="https://mail.google.com/mail/u/ben.schmuck@gmail.com/#inbox/19f41d34ca1f6cc7" target="_blank">📧 Fwd: eTicket Itinerary and Receipt for Confirmation OS1RXQ</a>&ensp;·&ensp;Spotted 2026-07-09</div></div><div class="ack-item daily-update daily-update-reminder" data-ack-id="ack-4808c06b40"><div class="du-header"><span class="du-icon">🔔</span><span class="du-type">Reminder</span><span class="du-related">re: Jr Lifeguard Competition — Albert &amp; Dom</span></div><div class="du-text">Registration deadline approaching for Illinois Swimming 2026 Summer LC 10 &amp; Under State Championships — check if Dom qualifies and needs to register.</div><div class="du-source"><a href="https://mail.google.com/mail/u/ben.schmuck@gmail.com/#inbox/19f43eca74639f1d" target="_blank">📧 [Chicago Park District Event] - Illinois Swimming 2026 Summer LC...</a>&ensp;·&ensp;Spotted 2026-07-09</div></div><div class="ack-item daily-update daily-update-reminder" data-ack-id="ack-4808c06b40"><div class="du-header"><span class="du-icon">🔔</span><span class="du-type">Reminder</span><span class="du-related">re: Jr Lifeguard Competition — Albert &amp; Dom</span></div><div class="du-text">Registration deadline approaching for 2026 Illinois Swimming Summer Regional Championships (HPAC) — check if Albert or Dom needs to register.</div><div class="du-source"><a href="https://mail.google.com/mail/u/ben.schmuck@gmail.com/#inbox/19f43d7982b65e6c" target="_blank">📧 [Chicago Park District Event] - 2026 Illinois Swimming Summer Reg...</a>&ensp;·&ensp;Spotted 2026-07-09</div></div><div class="ack-item daily-update daily-update-reminder" data-ack-id="ack-88308b1b78"><div class="du-header"><span class="du-icon">🔔</span><span class="du-type">Reminder</span></div><div class="du-text">Complete required documents in the Roamers Therapy portal before Ben &amp; Sabina&#x27;s appointment with Chelsey Daval on Friday July 10.</div><div class="du-source"><a href="https://mail.google.com/mail/u/ben.schmuck@gmail.com/#inbox/19f445690758c469" target="_blank">📧 Reminder to complete documents before your appointment with...</a>&ensp;·&ensp;Spotted 2026-07-09</div></div></section>
