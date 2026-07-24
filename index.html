@@ -337,7 +337,8 @@
           // Merge remote + local cache (handles offline acks)
           remote.forEach(function(id) { ackedIds.add(id); });
           writeCache(ackedIds);
-          applyAckedSet(false);
+          try { applyAckedSet(false); } catch(e) { console.warn('applyAckedSet error:', e); }
+          autoAckPastEvents();   // re-run after sync so any newly-loaded past acks are also handled
           hasSynced = true;
           showSync('✓ Synced', '#27ae60');
         })
@@ -425,6 +426,7 @@
         ackedIds.add(id);
         scheduleSync();
       }
+      ensureDoneSection();                        // guarantee section exists before grabbing doneList
       var doneList = document.getElementById('done-list');
       var clone = buildDoneClone(item, function(c) {
         ackedIds.delete(id);
@@ -501,8 +503,8 @@
 
       setupAckButtons();
       showTokenBanner();
-      loadFromGitHub();   // loads cache instantly, then syncs from GitHub async
-      autoAckPastEvents();
+      try { loadFromGitHub(); } catch(e) { console.warn('loadFromGitHub error:', e); }
+      autoAckPastEvents();   // always runs — past events go to Done regardless of sync state
       updateDoneCount();
     });
   </script>
