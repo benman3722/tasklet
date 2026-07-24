@@ -444,11 +444,16 @@
       ensureDoneSection();                  // create section first
       var clone = buildDoneClone(item, function(c) {
         manuallyRestored.add(id);
+        ackedIds.delete(id);
+        scheduleSync();
         item.style.display = '';
         c.remove();
         updateDoneCount();
       });
-      item.style.display = 'none';          // hide original
+      // Persist to cache + GitHub so refresh doesn't undo auto-acks
+      ackedIds.add(id);
+      scheduleSync();
+      item.style.display = 'none';          // hide original (also set by buildDoneClone)
       document.getElementById('done-list').appendChild(clone);
       updateDoneCount();
     }
